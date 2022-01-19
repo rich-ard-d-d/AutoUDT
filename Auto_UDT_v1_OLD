@@ -1,0 +1,401 @@
+; Old version of Auto_UDT, nolonger working
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+#Warn  ; Enable warnings to assist with detecting common errors.
+SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
+SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+#SingleInstance, force
+
+Close_UDT(){ ; Closes UDT
+	Loop{			
+		ifwinexist, ahk_class TUDSForm
+			WinClose ahk_class TUDSForm			
+			ifwinexist, ahk_class #32770
+				return, false
+		ifwinnotexist, ahk_class TUDSForm
+			break
+	}
+}
+
+Starting_UDT_and_Disgnostic(){			
+	run, C:\Program Files (x86)\WABCO Diagnostic Software\UDT\V6.50 (en)\UDT.exe
+	WinWait ahk_class #32770
+	send, {enter}
+	WinMaximize ahk_class TUDSForm
+	MouseClick, left,  37,  38 
+	Sleep, 100
+	MouseClick, left,  37,  54
+	Sleep, 100
+	WinWait, Open, 
+	IfWinNotActive, Open, , WinActivate, Open, 
+	WinWaitActive, Open, 
+	MouseClick, left,  29,  46
+	Sleep, 100
+	Loop{
+		ifwinexist, ahk_class #32770
+			MouseClick, left,  254,  146
+			Sleep, 100
+			Send, {ENTER}			
+		ifwinnotexist, ahk_class #32770
+			return, false
+	}
+}
+
+Check_for_Connection_Error(){
+	ifwinexist, ahk_class TWInitEcuEH
+		Return, False
+}
+
+Step_6(){
+	; checks for UDT error and skips step 8 if error occurs
+	Sleep, 3000
+	ifwinexist, ahk_class TMessageForm
+	{
+		WinActivate, ahk_class TMessageForm
+		Send, {ENTER}
+	}else{
+		Step_7()
+	}
+}	
+
+Step_7(){
+	MouseClick, left,  301,  82
+	Sleep, 100
+	MouseClick, left,  292,  169
+	Sleep, 100
+}
+
+Step_8_9_10_11(){
+	Sleep, 1000
+	MouseClick, left,  303,  100
+	Sleep, 1000
+	MouseClick, left,  330,  155
+	Sleep, 1000
+	MouseClick, left,  809,  90
+	Sleep, 1000
+	MouseClick, left,  824,  128
+	Sleep, 1000
+	WinWait, Enter PIN / PIN2, 
+	ifwinexist, ahk_class TWPin
+	{
+		WinWaitActive, ahk_class TWPin
+		Send, 9758{ENTER} ; insert pin	
+	} 
+	Sleep, 1000
+	MouseClick, left,  696,  43
+	Sleep, 100
+	MouseClick, left,  505,  135
+	Sleep, 100
+	MouseClick, left,  505,  135
+	Sleep, 100
+	MouseClick, left,  505,  142
+	Sleep, 100
+	MouseClick, left,  505,  142
+	Sleep, 100
+	MouseClick, left,  355, 169
+	Sleep, 100
+	MouseClick, left,  355, 169
+	Sleep, 3000
+	WinWaitActive ahk_class TDownloadMainForm
+}
+
+Download_Timer(){
+	Loop{
+		ifwinnotexist, ahk_class TDownloadMainForm
+			break
+	}
+}
+
+TParametriertool_Timer(){
+	Sleep, 1000
+	Loop{
+		ifwinnotexist, ahk_class Ghost
+			break
+	}
+}
+
+Step_13_14_15_16(){
+	WinActivate ahk_class TUDSForm
+	Sleep, 1000
+	MouseClick, left,  240,  95
+	Sleep, 1000
+	MouseClick, left,  123,  96
+	Sleep, 1000
+	MouseClick, left,  307,  81
+	Sleep, 1000
+	MouseClick, left,  323,  217
+	Sleep, 1000
+	MouseClick, left,  448,  79
+	Sleep, 1000
+}
+
+Step_17_18_19_20_21(){
+	Send, {TAB}{TAB}{TAB}
+	Sleep, 1000
+	Send, {ENTER}
+	Sleep, 1000
+	Send, {DOWN}
+	Sleep, 1000
+	Send, {ENTER}
+	Sleep, 1000
+	Send, {DOWN}
+	Sleep, 1000
+	Send, {ENTER}
+	Sleep, 1000
+	Send, {DOWN}
+	Sleep, 1000
+	Send, {ENTER}
+	Sleep, 1000
+	Send, {DOWN}
+	Sleep, 1000
+	Send, {ENTER}
+	Sleep, 1000
+}
+
+Step_22(){
+	WinActivate, ahk_class TUDSForm
+	MouseClick, left,  248,  89
+	Sleep, 100	
+	WinClose ahk_class TUDSForm
+	Sleep 1000
+}
+
+Step_23_24_25_26(){
+	run, C:\Program Files (x86)\WABCO Diagnostic Software\UDT\V6.50 (en)\UDT.exe
+	WinWait ahk_class #32770
+	send, {enter}
+	WinMaximize ahk_class TUDSForm
+	MouseClick, left,  37,  38
+	Sleep, 100
+	MouseClick, left,  37,  54
+	Sleep, 100
+	WinWait, Open, 
+	IfWinNotActive, Open, , WinActivate, Open, 
+	WinWaitActive, Open, 
+	Sleep 3000
+	MouseClick, left,  29,  46
+	Sleep, 1000
+	MouseClick, left,  254,  146
+	Sleep, 3000
+	Send, {ENTER}
+	Sleep, 3000
+	MouseClick, left,  301,  82
+	Sleep, 1000
+	MouseClick, left,  292,  169
+	Sleep, 1000	
+}
+
+Step_28(){
+	MouseClick, left,  686,  79
+	Sleep, 100
+	MouseClick, left,  728,  163
+	Sleep, 1000
+	ifwinexist, ahk_class TWPin
+	{
+		WinWaitActive, ahk_class TWPin
+		Send, 9758{ENTER} ; insert pin	
+	}
+}
+
+Step_29(){
+	WinWait, ahk_class TParametriertool		
+	WinActivate, ahk_class TParametriertool		
+	WinMaximize, ahk_class TParametriertool
+	MouseClick, left,  30,  980
+	TParametriertool_Timer()
+	Sleep, 100
+	WinActivate, ahk_class TParametriertool
+	MouseClick, left,  132,  980
+}
+	
+Step_File_Select_30(){
+	WinActivate, ahk_class #32770
+	MouseClick, left,  250,  49
+	Sleep, 100
+	MouseClick, left,  359,  215
+	Sleep, 100
+	Send, {ENTER}
+}
+
+Select_166(){
+	WinActivate, ahk_class #32770
+	MouseClick, left, 412, 143
+	loop, 5{
+		Send, {DOWN}
+	}
+	Send, {ENTER}
+}
+
+Select_168(){
+	WinActivate, ahk_class #32770
+	MouseClick, left, 412, 143
+	loop, 7{
+		Send, {DOWN}
+	}
+	Send, {ENTER}
+}	
+
+Step_31(){
+	WinWait, ahk_class TFrageParaLadenDlg
+	WinActivate, ahk_class TFrageParaLadenDlg
+	Send, {TAB}{ENTER}
+}
+
+Step_32(){
+	Sleep, 3000
+	WinActivate, ahk_class TParametriertool
+	MouseClick, left,  89,  973
+	WinWait, ahk_class TWriteEcuParaDlg
+	WinActivate, ahk_class TWriteEcuParaDlg
+	Send, {ENTER} 
+	Sleep, 3000
+	TParametriertool_Timer()
+	Sleep, 3000
+	Loop{
+	ifwinexist, ahk_class TParametriertool
+		WinClose ahk_class ahk_class TParametriertool	
+		ifwinexist, ahk_class TParametriertool
+			WinClose ahk_class ahk_class TParametriertool	
+		ifwinnotexist, ahk_class TParametriertool
+			break
+	}
+}
+
+Step_33_34(){
+	MouseClick, left, 434, 83
+	SLeep, 1000
+	Send, {TAB}{TAB}{TAB}{DOWN}{DOWN}
+	Sleep, 100
+	Send, {ENTER}
+}
+
+Step_35(){
+	Sleep, 3000
+	MouseClick, left, 690, 79
+	Sleep, 1000
+	MouseClick, left, 746, 158
+}
+
+Step_36_37(){  
+	Sleep, 1000
+	WinActivate, ahk_class TParametriertool
+	Sleep, 3000
+	MouseClick, left,  30,  957
+	Sleep, 10000
+	MouseClick, left,  1769, 236
+	Sleep, 100
+}
+
+Menu_1(){
+	InputBox, UserInput_1, Menu_1,
+	(LTrim
+		Welcome to AutoUDT by Richard.
+		Please input the number to the corresponding menu selection
+		(1) Flash a new ECU
+		(2) Reflash already flashed ECU (Use if differences exist)
+		(3) Check ECU for differences
+		(4) Exit
+	)
+	Return UserInput_1
+}
+
+Menu_2(){
+		InputBox, UserInput_2, Menu_2,
+		(LTrim
+			Select what ECU you wish to flash:
+			(1) 135
+			(2) 136
+			(3) 137
+			(4) 138
+			(5) 864 flash menu
+			(6) Go back to previous menu
+		)	
+	Return UserInput_2
+}
+
+Loop{
+	UserInput := Menu_1()
+	if (UserInput == 1){
+		loop{
+			ECU_Select := Menu_2()		
+			if (ECU_Select == 1){
+			}
+			else if (ECU_Select == 2){
+				while true{
+					Close_UDT()
+					Starting_UDT_and_Disgnostic()
+					Check_for_Connection_Error()
+					Step_6()
+					Step_8_9_10_11()
+					Download_Timer()
+					Step_13_14_15_16()
+					Step_17_18_19_20_21()
+					Step_22()
+					Step_23_24_25_26()
+					Step_28()
+					Step_29()
+					Step_File_Select_30()
+					Select_166()
+					Step_31()
+					Step_32()
+					Step_33_34()
+					Step_35()
+					Step_36_37()
+					Step_File_Select_30()
+					Select_166()
+					break
+					
+				}
+			}
+			else if (ECU_select == 3){
+			}
+			else if (ECU_Select == 4){
+				while true{
+					Close_UDT()
+					Starting_UDT_and_Disgnostic()
+					Check_for_Connection_Error()
+					Step_6()
+					Step_8_9_10_11()
+					Download_Timer()
+					Step_13_14_15_16()
+					Step_17_18_19_20_21()
+					Step_22()
+					Step_23_24_25_26()
+					Step_28()
+					Step_29()
+					Step_File_Select_30()
+					Select_168()
+					;Step_31()
+					;Step_32()
+					;Step_33_34()
+					;Step_35()
+					;Step_36_37()
+					;Step_File_Select_30()
+					;Select_168()
+					break
+				}
+			}
+			else if (ECU_Select == 5){
+			}
+			else if (ECU_Select == 6){
+				Break
+			}
+			else{
+				MsgBox, Please enter a valid menu selection. 
+			}	
+		}
+		break
+	}
+	else if (UserInput == 2){
+		break
+	}
+	else if (UserInput == 3){
+		break
+	}
+	else if (UserInput == 4){
+		MsgBox, Thank you for using AutoUDT!
+		break
+	}
+	else{
+		MsgBox, Please enter a valid menu selection. 
+	}
+}
